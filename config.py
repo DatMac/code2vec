@@ -14,6 +14,8 @@ class Config:
                             help="path to preprocessed dataset", required=False)
         parser.add_argument("-te", "--test", dest="test_path",
                             help="path to test file", metavar="FILE", required=False, default='')
+        parser.add_argument("-bs", "--batch_size", dest="batch_size",
+                            help="training batch size", required=False)
         parser.add_argument("-s", "--save", dest="save_path",
                             help="path to save the model file", metavar="FILE", required=False)
         parser.add_argument("-w2v", "--save_word2v", dest="save_w2v",
@@ -44,13 +46,13 @@ class Config:
         return parser
 
     def set_defaults(self):
-        self.NUM_TRAIN_EPOCHS = 20
-        self.SAVE_EVERY_EPOCHS = 1
-        self.TRAIN_BATCH_SIZE = 1024
+        self.NUM_TRAIN_EPOCHS = 200
+        self.SAVE_EVERY_EPOCHS = 10
+        self.TRAIN_BATCH_SIZE = 128
         self.TEST_BATCH_SIZE = self.TRAIN_BATCH_SIZE
         self.TOP_K_WORDS_CONSIDERED_DURING_PREDICTION = 10
         self.NUM_BATCHES_TO_LOG_PROGRESS = 100
-        self.NUM_TRAIN_BATCHES_TO_EVALUATE = 1800
+        self.NUM_TRAIN_BATCHES_TO_EVALUATE = 1000
         self.READER_NUM_PARALLEL_BATCHES = 6  # cpu cores [for tf.contrib.data.map_and_batch() in the reader]
         self.SHUFFLE_BUFFER_SIZE = 10000
         self.CSV_BUFFER_SIZE = 100 * 1024 * 1024  # 100 MB
@@ -77,6 +79,8 @@ class Config:
         self.MODEL_LOAD_PATH = args.load_path
         self.TRAIN_DATA_PATH_PREFIX = args.data_path
         self.TEST_DATA_PATH = args.test_path
+        if args.batch_size is not None:
+            self.TRAIN_BATCH_SIZE = int(args.batch_size)
         self.RELEASE = args.release
         self.EXPORT_CODE_VECTORS = args.export_code_vectors
         self.SAVE_W2V = args.save_w2v
